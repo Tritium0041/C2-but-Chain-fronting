@@ -2,33 +2,28 @@ package executer
 
 import (
 	"context"
+	"fmt"
 	"os/exec"
 	"time"
 )
 
-func DoCommand(command string, args []string, timeOut int)  ([]byte, error) {
-	ctx, cancel := context.WithTimeout(context.Background(),time.Duration(timeOut) *time.Second)
+func DoCommand(command string, args []string, timeOut int) ([]byte, error) {
+	// 创建上下文，设置超时时间
+	ctx, cancel := context.WithTimeout(context.Background(), time.Duration(timeOut)*time.Second)
 	defer cancel()
-	// Execute the command
+
+	// 创建命令
 	cmd := exec.CommandContext(ctx, command, args...)
 
-	// 启动命令
-	err := cmd.Start()
-	if err != nil {
-		panic(err)
-	}
+	// 执行命令并获取输出
+	result, err := cmd.CombinedOutput()
 
-	// 等待命令完成或超时
-	err = cmd.Wait()
-	if err != nil {
-		panic(err)
-	}
-	result, err := cmd.Output()
+
 	// 检查上下文是否因超时被取消
 	if ctx.Err() == context.DeadlineExceeded {
-		panic(err)
+		return nil, fmt.Errorf("command timed out")
 	}
 
-	// 返回执行结果
-	return result, nil
+	// 返回执行结果和错误
+	return result, err
 }
