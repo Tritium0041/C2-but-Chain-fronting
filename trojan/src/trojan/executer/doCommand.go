@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func doCommand(command string, args []string, timeOut int) ([]byte, error) {
+func DoCommand(command string, args []string, timeOut int)  ([]byte, error) {
 	ctx, cancel := context.WithTimeout(context.Background(),time.Duration(timeOut) *time.Second)
 	defer cancel()
 	// Execute the command

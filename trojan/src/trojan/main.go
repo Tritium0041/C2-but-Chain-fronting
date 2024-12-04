@@ -1,7 +1,8 @@
 package main
 
 import (
-	"executer"
+	"fmt"
+	"trojan/executer"
 )
 
 func main(){
@@ -9,5 +10,5 @@ func main(){
 	if err != nil {
 		panic(err)
 	}
-	println(string(res))
+	fmt.Println(string(res))
 }
