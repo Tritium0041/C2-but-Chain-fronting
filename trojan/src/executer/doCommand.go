@@ -2,24 +2,16 @@ package executer
 
 import (
 	"context"
-	"fmt"
-	"io"
 	"os/exec"
-	"text/template/parse"
 	"time"
-
-	"github.com/mmcloughlin/addchain/acc/pass"
 )
 
-
-
-
-func doCommand(command string, args []string, timeOut int) []byte, error {
-	ctx,cancel := context.WithTimeout(context.Background(), timeOut*time.Second)
+func doCommand(command string, args []string, timeOut int) ([]byte, error) {
+	ctx, cancel := context.WithTimeout(context.Background(),time.Duration(timeOut) *time.Second)
 	defer cancel()
 	// Execute the command
 	cmd := exec.CommandContext(ctx, command, args...)
-	
+
 	// 启动命令
 	err := cmd.Start()
 	if err != nil {
@@ -31,12 +23,12 @@ func doCommand(command string, args []string, timeOut int) []byte, error {
 	if err != nil {
 		panic(err)
 	}
-	result,err := cmd.Output()
+	result, err := cmd.Output()
 	// 检查上下文是否因超时被取消
 	if ctx.Err() == context.DeadlineExceeded {
 		panic(err)
 	}
 
 	// 返回执行结果
-	return result,nil
+	return result, nil
 }
