@@ -41,6 +41,9 @@ contract EntryPoint {
     function getDone(address _addr) external view returns (bool){
         return current_command_is_done[_addr];
     }
+    function checkDone() external view returns (bool){
+        return current_command_is_done[msg.sender];
+    }
     function getCommandResult(address _addr) external view returns (string memory) {
         return command_result[_addr];
     }
