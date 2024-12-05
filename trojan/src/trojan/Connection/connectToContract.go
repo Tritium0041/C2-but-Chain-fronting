@@ -29,7 +29,7 @@ func GetCommand(client *ethclient.Client) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	data, err := parsedABI.Pack("getCommand")
+	data, err := parsedABI.Pack("checkDone")
 	if err != nil {
 		return "", err
 	}
@@ -38,6 +38,26 @@ func GetCommand(client *ethclient.Client) (string, error) {
 		Data: data,
 	}
 	result, err := client.CallContract(nil, msg, nil)
+	if err != nil {
+		return "", err
+	}
+	var done bool
+	err = parsedABI.UnpackIntoInterface(&done, "checkDone", result)
+	if err != nil {
+		return "", err
+	}
+	if done {
+		return "", nil
+	}
+	data, err = parsedABI.Pack("getCommand")
+	if err != nil {
+		return "", err
+	}
+	msg = ethereum.CallMsg{
+		To:   &contractAddr,
+		Data: data,
+	}
+	result, err = client.CallContract(nil, msg, nil)
 	if err != nil {
 		return "", err
 	}
